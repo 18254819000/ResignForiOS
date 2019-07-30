@@ -238,13 +238,17 @@ class MainSignView: NSView {
     
     //MARK: IBActions
     @IBAction func chooseProvisioningProfile(_ sender: NSPopUpButton) {
-        if sender.indexOfSelectedItem == 0 {
-//            newBundleIDField.isEditable = true
+        let title = sender.selectedItem?.title ?? "";
+        let list = provisioningProfiles.filter { (profile) -> Bool in
+            return title.contains(profile.name)
+        }
+        
+        if list.count == 0 {
             newBundleIDField.stringValue = ""
         } else {
-//            newBundleIDField.isEditable = false
-            currSelectProfile = provisioningProfiles[sender.indexOfSelectedItem - 1]
-            let matchCer = currSelectProfile?.developerCertificates.first
+            let selectProfile = list.first!
+            currSelectProfile = selectProfile
+            let matchCer = selectProfile.developerCertificates.first
             if let matchCer = matchCer, codesigningCerts.contains(matchCer) {
                 codeSignCertsPop.selectItem(withTitle: matchCer)
                 currSelectCert = matchCer
